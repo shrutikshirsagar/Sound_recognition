@@ -68,8 +68,7 @@ random_state = np.random.RandomState(0)
 output_cols = ['feat', 'F1_score', 'Acc', 'recall', 'precision']
 cv = StratifiedKFold(n_splits=5)
 print('stratified', cv)
-classifier = svm.SVC(kernel='linear', probability=True,
-                     random_state=random_state)
+classifier = svm.SVC()
 
 var1 = 'x'
 feat_2 = ['[:, 0:5]', '[:,5:10]', '[:, 10:14]', '[:, 14:27]', '[:,27:39]', '[:,39:75]', '[:,75:81]', '[:,81:-1]', '[:,:-1]']
