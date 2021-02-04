@@ -11,7 +11,8 @@ import numpy as np
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-  
+
+from tqdm import tqdm
 import os
 import iracema
 import numpy as np
@@ -31,8 +32,10 @@ import numpy as np
 from scipy.stats import kurtosis, skew
 from scipy.stats import entropy
 feat_audio = np.empty((0,206))
-path = '/media/amrgaballah/Backup_Plus/Internship_exp/Exp_4/final_training_files/Fire_alarm/'
-for filename_ in os.listdir(path):
+path = '/media/amrgaballah/Backup_Plus/Internship_exp/Exp_4/final_training_files/no_fire_alarm_new_sr/'
+files_all = os.listdir(path)
+for filename_ in tqdm(files_all):
+
     #### filename and parameters
     filename = os.path.join(path,filename_)
     print(filename)
@@ -331,7 +334,8 @@ for filename_ in os.listdir(path):
        
         feat_audio = np.vstack((feat_audio, final_f))
 n= feat_audio.shape[0]
-X00 = np.ones((n,1))
+X00 = np.zeros((n,1))
+#X01 = np.ones((n,1))
 feat_rule = np.hstack((feat_audio,X00))
 df_final=pd.DataFrame(feat_rule)
-df_final.to_csv('/media/amrgaballah/Backup_Plus/Internship_exp/feat_firealarm_rulebased_all.csv',index=None)   
+df_final.to_csv('/media/amrgaballah/Backup_Plus/Internship_exp/feat_no_firealarm_rulebased_all.csv',index=None)   
