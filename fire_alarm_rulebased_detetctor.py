@@ -7,7 +7,11 @@
 from __future__ import division
 from am_analysis import am_analysis as ama
 import numpy as np
+
+import os
+import numpy as np
 import matplotlib.pyplot as plt
+  
 import os
 import iracema
 import numpy as np
@@ -27,23 +31,24 @@ import numpy as np
 from scipy.stats import kurtosis, skew
 from scipy.stats import entropy
 feat_audio = np.empty((0,206))
-path = '/media/amrgaballah/Backup_Plus/Internship_exp/final_wavfiles_sr/Fire_alarm/'
+path = '/media/amrgaballah/Backup_Plus/Internship_exp/Exp_4/final_training_files/Fire_alarm/'
 for filename_ in os.listdir(path):
     #### filename and parameters
     filename = os.path.join(path,filename_)
-
-
-    x, fs = librosa.load(filename_, sr= None)
+    print(filename)
+    fs, x = wavfile.read(filename)
+    y, fs = librosa.load(filename, sr= None)
+   
     sr =fs
     frames_all = range(len(x))
     hop_length = 512
     frame_length = 2048
     #### Step 1: calculate the rmse over frame_length = 2048 and hop_length = 512
     #### peak_env and rmse
-    peak_env = numpy.array([max(abs(x[i:i+frame_length]))for i in range(0, len(x), hop_length)])
-    rmse = librosa.feature.rms(x, frame_length=frame_length, hop_length=hop_length, center=True)
+    peak_env = numpy.array([max(abs(y[i:i+frame_length]))for i in range(0, len(y), hop_length)])
+    rmse = librosa.feature.rms(y, frame_length=frame_length, hop_length=hop_length, center=True)
     rmse = (rmse-np.mean(rmse))/np.std(rmse)
-    print(rmse.shape)
+   
     frames = range(len(peak_env))
     t = librosa.frames_to_time(frames, sr=sr, hop_length=hop_length)
    
@@ -52,9 +57,9 @@ for filename_ in os.listdir(path):
    ###### Step 2: Based on rmse value make  a rule for detetction of region of intrest for fire alarm fetaures. Algorithm for selection of starting and ending time of fire alarm when it crosses zero, raised a flag for strating featur extraction get a start time and then stop flag as soon as it goes to negative value then the end time of fire alarm beep. 
     ### list of array where rmse values are greater than 0
     rmse_pos = np.where(np.array([rmse.T])>=0)[1]
-    print(rmse_pos.shape)
+   
     t_new = t[rmse_pos]
-    print(t_new.shape)
+   
     start_time = [] 
     end_time = []
     for index in range(len(rmse_pos)-1):
@@ -67,8 +72,7 @@ for filename_ in os.listdir(path):
             start_time.append(t_new[index+1])
 
     end_time.append(t_new[-1]) ### to append last end time
-    print(len(start_time), len(end_time))
-
+   
 
     ### total number of knock
     print('total number of beeps', len(start_time))
@@ -326,16 +330,8 @@ for filename_ in os.listdir(path):
                              feat_61[None,:], feat_62[None,:], feat_67[None,:], feat_68[None,:], feat_69[None,:],  feat_70[None,:],feat_71[None,:], feat_72[None,:], df1))
        
         feat_audio = np.vstack((feat_audio, final_f))
-
-   
-
 n= feat_audio.shape[0]
-
-
 X00 = np.ones((n,1))
-
 feat_rule = np.hstack((feat_audio,X00))
-
-
 df_final=pd.DataFrame(feat_rule)
 df_final.to_csv('/media/amrgaballah/Backup_Plus/Internship_exp/feat_firealarm_rulebased_all.csv',index=None)   
