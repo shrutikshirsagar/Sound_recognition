@@ -7,11 +7,7 @@
 from __future__ import division
 from am_analysis import am_analysis as ama
 import numpy as np
-
-import os
-import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib inline  
 import os
 import iracema
 import numpy as np
