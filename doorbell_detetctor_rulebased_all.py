@@ -54,7 +54,7 @@ for filename_ in tqdm(files_all):
     #### peak_env and rmse
     peak_env = numpy.array([max(abs(y[i:i+frame_length]))for i in range(0, len(y), hop_length)])
     rmse = librosa.feature.rms(y, frame_length=frame_length, hop_length=hop_length, center=True)
-#     rmse = (rmse-np.mean(rmse))/np.std(rmse)
+
 
     frames = range(len(peak_env))
     t = librosa.frames_to_time(frames, sr=sr, hop_length=hop_length)
@@ -81,7 +81,7 @@ for filename_ in tqdm(files_all):
     end_time.append(t_new[-1]) ### to append last end time
 
 
-    ### total number of knock
+    ### total number of doorbell sound in audio files
     print('total number of beeps', len(start_time))
 
     ###### Step 3: Once we get a region of interest, calculate features for doorbell : pitch, harmonics, harmonic ratio, Spectral centroid, spectral bandwidth, spectral flatness, duration, entropy of energy, skewness and kurtosis of energy.
@@ -132,8 +132,7 @@ for filename_ in tqdm(files_all):
             feat_8 = skew(rms_)
 
             feat_9 = entropy(rms_)
-        #     zcrs_rmse = librosa.feature.zero_crossing_rate(rms_)
-        #     feat_10 = np.sum(zcrs_rmse, axis = 1)
+   
             ##### duration fetaures 
             duration = j1-i1
             feat_11 = np.array([duration])
@@ -144,9 +143,7 @@ for filename_ in tqdm(files_all):
             feat_12 = np.sum(zcrs, axis = 1)
         #     #### harmonics related fetaures
             harmonics = iracema.harmonics.extract(fft, pitch, nharm=12)
-        #     h_f = harmonics['frequency'].data
-        #     feat_13 = np.mean(np.array([h_f]), axis=1)
-        #     feat_14 = np.std(np.array([h_f]), axis=1)
+
            ### high frquency content
             hfc = iracema.features.hfc(fft, method='energy')
             hfc_ = hfc.data
