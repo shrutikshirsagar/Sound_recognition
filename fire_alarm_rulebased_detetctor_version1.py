@@ -1,6 +1,6 @@
 ###### In this code, I have implemented rule for selecting a area of intrest by observing abrupt changes in RMSE energy.
 ###### Algorithm:
-###### Step 1: calculate the rmse over frame_length = 2048 and hop_length = 512
+###### Step 1: calculate the rmse over frame_length = 2048 and hop_length = 512 and then normalize it
 ###### Step 2: Based on rmse value make  a rule for detetction of region of intrest for fire alarm fetaures. Algorithm for selection of starting and ending time of fire alarm when it crosses zero, raised a flag for strating featur extraction get a start time and then stop flag as soon as it goes to negative value then the end time of fire alarm beep. 
 ###### Step 3: Once we get a region of interest, calculate features for Fire alarm : pitch, harmonics, harmonic ratio, Spectral centroid, spectral bandwidth, spectral flatness, duration, entropy of energy, skewness and kurtosis of energy.
 
@@ -46,7 +46,7 @@ for filename_ in tqdm(files_all):
     frames_all = range(len(x))
     hop_length = 512
     frame_length = 2048
-    #### Step 1: calculate the rmse over frame_length = 2048 and hop_length = 512
+    ###### Step 1: calculate the rmse over frame_length = 2048 and hop_length = 512 and then normalize it
     #### peak_env and rmse
     peak_env = numpy.array([max(abs(y[i:i+frame_length]))for i in range(0, len(y), hop_length)])
     rmse = librosa.feature.rms(y, frame_length=frame_length, hop_length=hop_length, center=True)
@@ -77,7 +77,7 @@ for filename_ in tqdm(files_all):
     end_time.append(t_new[-1]) ### to append last end time
    
 
-    ### total number of knock
+    ### total number of beeps
     print('total number of beeps', len(start_time))
 
     ###### Step 3: Once we get a region of interest, calculate features for Fire alarm : pitch, harmonics, harmonic ratio, Spectral centroid, spectral bandwidth, spectral flatness, duration, entropy of energy, skewness and kurtosis of energy.
@@ -124,8 +124,7 @@ for filename_ in tqdm(files_all):
         feat_8 = skew(rms_)
 
         feat_9 = entropy(rms_)
-    #     zcrs_rmse = librosa.feature.zero_crossing_rate(rms_)
-    #     feat_10 = np.sum(zcrs_rmse, axis = 1)
+ 
         ##### duration fetaures 
         duration = j1-i1
         feat_11 = np.array([duration])
@@ -136,9 +135,7 @@ for filename_ in tqdm(files_all):
         feat_12 = np.sum(zcrs, axis = 1)
     #     #### harmonics related fetaures
         harmonics = iracema.harmonics.extract(fft, pitch, nharm=12)
-    #     h_f = harmonics['frequency'].data
-    #     feat_13 = np.mean(np.array([h_f]), axis=1)
-    #     feat_14 = np.std(np.array([h_f]), axis=1)
+   
        ### high frquency content
         hfc = iracema.features.hfc(fft, method='energy')
         hfc_ = hfc.data
