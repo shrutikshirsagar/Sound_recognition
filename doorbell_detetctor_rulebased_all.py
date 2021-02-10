@@ -3,7 +3,7 @@
 ###### Step 1: calculate the rmse over frame_length = 2048 and hop_length = 512
 ###### Step 2: Based on rmse value make  a rule for detetction of region of intrest for fire alarm fetaures. Algorithm for selection of starting and ending time of fire alarm when it crosses zero, raised a flag for strating featur extraction get a start time and then stop flag as soon as it goes to negative value then the end time of fire alarm beep. 
 ###### Step 3: Once we get a region of interest, calculate features for Fire alarm : pitch, harmonics, harmonic ratio, Spectral centroid, spectral bandwidth, spectral flatness, duration, entropy of energy, skewness and kurtosis of energy.
-
+###### Step 4: Aggregate feature at 500 ms for making a decision as doorbell sound last for around 1.5 to 2-sec long.
 from __future__ import division
 from am_analysis import am_analysis as ama
 import numpy as np
@@ -32,7 +32,7 @@ import numpy as np
 from scipy.stats import kurtosis, skew
 from scipy.stats import entropy
 feat_audio = np.empty((0,202))
-path = '/media/amrgaballah/Backup_Plus/Internship_exp/Exp_1/final_training/ding_dong/'
+path = '//media/amrgaballah/Backup_Plus/Internship_exp/Exp_4/final_training_files/no_fire_alarm_new_sr/'
 
 files_all = os.listdir(path)
 for filename_ in tqdm(files_all):
@@ -84,7 +84,7 @@ for filename_ in tqdm(files_all):
     ### total number of knock
     print('total number of beeps', len(start_time))
 
-    ###### Step 3: Once we get a region of interest, calculate features for Fire alarm : pitch, harmonics, harmonic ratio, Spectral centroid, spectral bandwidth, spectral flatness, duration, entropy of energy, skewness and kurtosis of energy.
+    ###### Step 3: Once we get a region of interest, calculate features for doorbell : pitch, harmonics, harmonic ratio, Spectral centroid, spectral bandwidth, spectral flatness, duration, entropy of energy, skewness and kurtosis of energy.
     ####  get samples from start time and end time from audio signal
     t_w = librosa.samples_to_time(frames_all, sr=sr)
     time_l = list(t_w)
@@ -347,4 +347,4 @@ for filename_ in tqdm(files_all):
     #X01 = np.ones((n,1))
     feat_rule = np.hstack((feat_audio,X00))
     df_final=pd.DataFrame(feat_rule)
-    df_final.to_csv('//media/amrgaballah/Backup_Plus/Internship_exp/doorbell_all.csv',index=None)   
+    df_final.to_csv('//media/amrgaballah/Backup_Plus/Internship_exp/Exp_4/final_training_files_no_Fire_alarm_500ms.csv',index=None)   
